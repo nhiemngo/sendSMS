@@ -10,7 +10,7 @@ export default class Main extends React.Component {
       this.state = {phoneNumber: '', textBody: ''};
     }
 
-  //use the Twilio REST API to send message to the designated number
+  //use the Twilio REST API to send message to the designated number.
   send(toNumber, content)  {
     var headers = new Headers()
     headers.append('Accept', 'application/json')
@@ -19,17 +19,17 @@ export default class Main extends React.Component {
 
     var url = 'https://api.twilio.com/2010-04-01/Accounts/AC9237a102893f7de7dbc091edb2b80a6f/Messages'
 
-    //use fetch to send an Http POST request to the Twilio REST API
+    //use fetch to send an Http POST request to the Twilio REST API.
     fetch(url, {
       method: 'POST',
-      //originally, I cannot authorize the request just by setting headers. I also tried to put the credentials directly in the url, but that did not work
-      //I discovered the solution at https://stackoverflow.com/questions/34815853/react-native-fetch-and-basic-authentication
+      //originally, I cannot authorize the request just by setting headers. I also tried to put the credentials directly in the url, but that did not work.
+      //I discovered the solution at https://stackoverflow.com/questions/34815853/react-native-fetch-and-basic-authentication.
       headers: headers,
-      //for some reason, the body of the request cannot be sent. I have already authorized the request but always get 400: Bad request from the server
+      //for some reason, the body of the request cannot be sent. I have already authorized the request but always get 400: Bad request from the server.
       body: JSON.stringify({
-        'To': '+13158257415',
+        'To': toNumber,
         'From': '+12147616710',
-        'Body': 'Testing 1 2 3',
+        'Body': content,
       }),
     })
     .then((response) => {
@@ -60,7 +60,7 @@ export default class Main extends React.Component {
     return ('+' + returnValue)
   }
 
-  //validate the input data then pass it to send()
+  //validate the input data then pass it to send().
   onPressButton() {
       num = this.validateInput(this.state.phoneNumber)
       body = "Testing"
