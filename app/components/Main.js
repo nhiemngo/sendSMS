@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, TextInput, Button, Alert } from 'react-native';
+import { Platform, StyleSheet, Text, View, TextInput, Button, Alert } from 'react-native';
 
 const base64 = require('base-64');
 
@@ -118,14 +118,30 @@ const styles = StyleSheet.create({
   },
 
   titleText: {
-    fontSize:40,
-    fontWeight: '500',
+    ...Platform.select({
+      ios: {
+        fontSize:30,
+        fontWeight: 'bold',
+      },
+      android: {
+        fontSize:40,
+        fontWeight: '500',
+      },
+    }),
     color: '#e43a19',
   },
 
   numberBox: {
-    fontSize:17,
-    width:160,
+    ...Platform.select({
+      ios: {
+        fontSize:15,
+        width:175,
+      },
+      android: {
+        fontSize:17,
+        width:160,
+      },
+    }),
     paddingLeft: 5,
     paddingRight: 5,
     paddingBottom:10,
@@ -134,8 +150,16 @@ const styles = StyleSheet.create({
   },
 
   bodyBox: {
-    fontSize:17,
-    width:160,
+    ...Platform.select({
+      ios: {
+        fontSize:15,
+        width:175,
+      },
+      android: {
+        fontSize:17,
+        width:160,
+      },
+    }),
     paddingLeft: 5,
     paddingRight: 5,
     paddingBottom:10,
