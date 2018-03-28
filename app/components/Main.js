@@ -10,45 +10,43 @@ export default class Main extends React.Component {
       this.state = {phoneNumber: '', textBody: ''};
     }
 
-  //use the Twilio REST API to send message to the designated number.
+  //use the Twilio REST API to send message to the designated number:
   send(toNumber, content)  {
-    var headers = new Headers()
-    headers.append('Accept', 'application/json')
-    headers.append('Content-Type', 'application/json')
-    headers.append('Authorization', 'Basic ' + base64.encode('AC9237a102893f7de7dbc091edb2b80a6f:385695064d93b6b7c7ff13186a5723f7')) //the credentials only works after they're encoded
+    var data = new FormData();
+    data.append("To", toNumber);
+    data.append("From", "+12147616710");
+    data.append("Body", content);
 
-    var url = 'https://api.twilio.com/2010-04-01/Accounts/AC9237a102893f7de7dbc091edb2b80a6f/Messages'
+    var xhr = new XMLHttpRequest();
+    xhr.withCredentials = true;
 
-    //use fetch to send an Http POST request to the Twilio REST API.
-    fetch(url, {
-      method: 'POST',
-      //originally, I cannot authorize the request just by setting headers. I also tried to put the credentials directly in the url, but that did not work.
-      //I discovered the solution at https://stackoverflow.com/questions/34815853/react-native-fetch-and-basic-authentication.
-      headers: headers,
-      //for some reason, the body of the request cannot be sent. I have already authorized the request but always get 400: Bad request from the server.
-      body: JSON.stringify({
-        'To': toNumber,
-        'From': '+12147616710',
-        'Body': content,
-      }),
-    })
-    .then((response) => {
-      temp = response.status.toString()
-      //let the user know the result of their request
-      if (temp == '400') {
-        Alert.alert('Error ' + temp + ': the SMS cannot be sent to ' + toNumber + '\nBody: ' + content)
-      }
-      else if (temp == '201'){
-        Alert.alert('SMS sent to ' + toNumber)
-      }
-      else {
-        Alert.alert('The Twilio server is having errors')
+    xhr.addEventListener("readystatechange", function () {
+      //Alert the user of the status of their request:
+      if (this.readyState === 4) {
+        console.log(this.responseText);
+
+        status = this.status;
+
+        if (status == '400') {
+          Alert.alert('The number ' + toNumber + ' is not correct, or has not been verified.')
+        }
+        else if (status == '201'){
+          Alert.alert('SMS sent.')
+        }
+        else {
+          Alert.alert('The Twilio server is having errors.')
+        }
       }
     });
 
+    xhr.open("POST", "https://api.twilio.com/2010-04-01/Accounts/AC9237a102893f7de7dbc091edb2b80a6f/Messages");
+    xhr.setRequestHeader('Authorization', 'Basic ' + base64.encode('AC9237a102893f7de7dbc091edb2b80a6f:385695064d93b6b7c7ff13186a5723f7'))
+
+    xhr.send(data);
+
   }
 
-  //returns only the numbers in the input value, preceded by '+'. Used for validating the phone number.
+  //returns only the numbers in the input value, preceded by '+'. Used for validating the phone number before passing it to send(). Additional validation is left for the Twilio server.
   validateInput(inputValue) {
     testValue = "0123456789"
     returnValue = ""
@@ -60,7 +58,7 @@ export default class Main extends React.Component {
     return ('+' + returnValue)
   }
 
-  //validate the input data then pass it to send().
+  //validates the input data using validateInput() then pass it to send():
   onPressButton() {
       num = this.validateInput(this.state.phoneNumber)
       body = "Testing"
@@ -74,10 +72,12 @@ export default class Main extends React.Component {
     return (
       <View style={styles.container}>
         <View><Text style={styles.titleText}>Send SMS</Text></View>
+
           <View>
             <TextInput
               style={styles.numberBox}
               value = {this.state.phoneNumber}
+              maxLength = {20}
               placeholder = "# (With country code)"
               onChangeText={(phoneNumber) => this.setState({phoneNumber})}
             />
