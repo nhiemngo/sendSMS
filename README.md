@@ -16,11 +16,7 @@ This project used [Create React Native App](https://github.com/react-community/c
 
 **Additional feature:**
 
-- [x] User can input the text content they want to send
-
-## Interface:
-
-![Interface](./Screenshot_20180325-174328.png)
+- [x] User can input the text content they want to send.
 
 ## The project in action:
 
