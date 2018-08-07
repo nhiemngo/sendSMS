@@ -1,9 +1,5 @@
 # About
 
-Creator: **Nhiem Ngo.**
-
-Interview assignment for Chopp.
-
 This project used [Create React Native App](https://github.com/react-community/create-react-native-app).
 
 ## Features:
